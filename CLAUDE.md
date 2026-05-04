@@ -2,6 +2,21 @@
 
 These apply to every project. Project-specific rules live in per-project memory.
 
+## Every line has a purpose
+
+This is the load-bearing principle. Every line of code, every test fixture, every comment, every branch must have a reason a future reader can verify against the spec, real data, or a real failure that happened. If the answer to "why is this here?" is "just in case" or "Claude wrote it reflexively," delete it.
+
+This isn't a style preference — it's the *reason* the rules below exist:
+
+- **Real data in tests** isn't pedantry. Invented fixture values create code that exists to satisfy invented inputs. Real captured responses are the only thing that proves the production code has a real job. Don't fabricate inputs to exercise branches you wish existed.
+- **Cleaning up after a change isn't optional.** When you change what data flows in (drop a header, remove a field, narrow a contract), every consumer of the now-absent data is dead code. Delete it in the same change. "Flushing is part of taking a shit." Leaving `iscanceled`-shaped code around after dropping `includecancelled` is the canonical failure mode — don't do it.
+- **No defensive `?? null`, `?? []`, `if ($x === null)`, or `match (true)` arms** unless the spec or a real captured response shows the case can occur. Verify against the source, not your guess about what *could* happen.
+- **No padded docblocks.** Don't explain "what should never happen" — exceptions already mean that. Don't invent corner cases for the docblock to sound thorough.
+- **No `throw: false` / blanket catches.** Catch the specific known failure (status code + error code, exception subtype). Let the rest propagate.
+- **Naming must match behavior.** A function called `parseX` must parse. If it just unwraps a response envelope, name it `xFromResponse` or `unwrapX`.
+
+The user's litmus test: "I want somebody to read it, and understand for all of it why it is here." If a future reader would wonder why a line exists, you've already failed. Audit your own diff with that question before you stop.
+
 ## Git workflow
 
 The user runs all git operations themselves. Never run `git commit`, `git add` followed by `git commit`, `git push`, `git reset` (without explicit ask), `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization.
@@ -64,6 +79,8 @@ Split decisions from side effects. Pure functions take data and return a result 
 Before changing a function, read the callers, nearby variables, and any config it consumes (env vars, terraform, IAM policies, config files). When code reads from `os.environ` or a config source, inspect that source and explicitly state whether you updated it or verified it's already correct. The user shouldn't have to ask "did you update terraform?"
 
 When searching for usage of something, search broadly (no language filter) — usages cross file types.
+
+**Search the whole repo, not just the module you're editing.** "Self-contained" framings (a plugin, a service, a package) lie when string-keyed cross-module contracts exist — WordPress meta keys, GraphQL field names, query string params, log line shapes, route paths, environment variable names, event names. These look like internal strings but are actually APIs other modules depend on. When you rename or remove one, grep the *entire repo* for the literal string. Renaming `_studiogonz_sold_out` inside a plugin while the theme silently reads it is the canonical failure — the public site breaks invisibly.
 
 ## Architectural judgment
 
