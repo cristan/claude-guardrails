@@ -10,10 +10,10 @@ I got tired of writing the same feedback into project-level memory over and over
 
 ## What's in it
 
-- "PR time": whenever I type this, everything which is changed in the branch is doublechecked for gotcha's. This has saved me many, many times.
 - Every line of code must have real, verifiable purpose. Hence real data in unit tests. No writing checks "just in case". Clean up dead code the second it is introduced.
-- Git workflow: I do the commits, but the AI can suggest commit messages
 - Functional code: when possible, make methods have no side effects. This makes them clean, clear and easily unit testable.
+- Git workflow: I do the commits, but the AI can suggest commit messages
+- "PR time": whenever I type this, everything which is changed in the branch is doublechecked for gotcha's. This has saved me many, many times.
 - Random stuff to not make AI dumb
 
 See [CLAUDE.md](./CLAUDE.md) for the full text.
