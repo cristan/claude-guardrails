@@ -10,7 +10,7 @@ I got tired of writing the same feedback into project-level memory over and over
 
 ## What's in it
 
-- Every line of code must have real, verifiable purpose. Hence real data in unit tests. No writing checks "just in case". Clean up dead code the second it is introduced.
+- Every line of code must have real, verifiable purpose. Hence real data in unit tests. No writing checks "just in case". Clean up dead code the second it is introduced. Claude still ended making up test data, hence a hook which adds a reminder. That finally seems to help.
 - Functional code: when possible, make methods have no side effects. This makes them clean, clear and easily unit testable. For example: pass `now` as a parameter for methods who use the current date. This makes it unit testable without mocking anything.
 - Git workflow: I do the commits, but the AI can suggest commit messages
 - "PR time": whenever I type this, everything which is changed in the branch is doublechecked for gotcha's. This has saved me many, many times.
