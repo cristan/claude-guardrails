@@ -41,7 +41,10 @@ if [[ "$is_test" -eq 0 ]]; then
   exit 0
 fi
 
-reminder='Test file detected. For every value in this test, you should be able to answer "where does this come from?" — a captured backend response, a real run of the app, an existing fixture elsewhere in the codebase, an official spec/sample, or a real entity in the system. If you cannot, ask the user. Plausible-looking made-up values are the failure mode. The same applies to shapes: do not extrapolate from a sibling fixture without verifying. Hard-code expected values as literals. Don't go overboard: no test data in method names. Only explain the relevance in comments inside the method when not obvious.'
+reminder=$(cat <<'EOF'
+Test file detected. For every value in this test, you should be able to answer "where does this come from?" — a captured backend response, a real run of the app, an existing fixture elsewhere in the codebase, an official spec/sample, or a real entity in the system. If you cannot, ask the user. Plausible-looking made-up values are the failure mode. The same applies to shapes: do not extrapolate from a sibling fixture without verifying. Hard-code expected values as literals. Don't go overboard: no test data in method names. Only explain the relevance in comments inside the method when not obvious.
+EOF
+)
 
 jq -nc --arg ctx "$reminder" '{
   hookSpecificOutput: {
