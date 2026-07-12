@@ -33,7 +33,7 @@ When suggesting a commit message:
 1 commit at a time:
 - Split orthogonal changes into separate commits. Helper change + its tests is one commit; the parser rewrite that uses it is another.
 - For bug fixes via refactor-then-fix: commit 1 is the extraction + a *failing* test that asserts correct behavior; commit 2 is the minimal fix. Do not commit "test pinning broken behavior + comment saying it's broken" — that's prose you'd just remove.
-- A commit must observably do something: every new function, class, or data file in it is called or read by code that exists at that commit.
+- Every commit must observably do something: every new function, class, or data file in it is called or read by code that exists at that commit.
 
 ## Verification over speculation
 
