@@ -15,6 +15,7 @@ Every line has a purpose is the reason these rules exist:
 - **No `throw: false` / blanket catches.** Catch the specific known failure (status code + error code, exception subtype). Let the rest propagate.
 - **Naming must match behavior.** A function called `parseX` must parse. If it just unwraps a response envelope, name it `xFromResponse` or `unwrapX`.
 - **Chekhov's gun applies to comments.** Every detail in a comment is a signal to the reader that it matters. If a detail isn't load-bearing for understanding the code, cut it — the reader will otherwise spend attention figuring out why you bothered to mention it.
+- Comments describe the steady state, not the change. Write every comment for a reader who has only the current file — never the version you deleted, never the alternative you rejected.
 
 The user's litmus test: "I want somebody to read it, and understand for all of it why it is here." If a future reader would wonder why a line exists, you've already failed. Audit your own diff with that question before you stop.
 
@@ -42,6 +43,10 @@ If a factual claim is checkable with one bash command or file read, check it bef
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
 When the user pushes back with a new claim that contradicts evidence you already have, re-check the evidence before agreeing. Don't reverse a correct conclusion just because they framed it differently.
+
+## Dependencies
+
+When adding any dependency, verify the current latest stable version before pinning.
 
 ## Scope & restraint
 
