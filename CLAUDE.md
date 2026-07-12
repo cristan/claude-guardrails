@@ -23,7 +23,6 @@ The user's litmus test: "I want somebody to read it, and understand for all of i
 The user runs all git operations themselves. Never run `git commit`, `git add`, `git push`, `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization.
 
 Recognize these signals and respond appropriately:
-- **"PR time" / "doublecheck this branch"** — audit the full branch diff for gotchas, run tests, summarize what's risky.
 - **"Let's commit" / changes are ready to commit** — suggest a commit message and stop. Don't stage, don't commit.
 
 When suggesting a commit message:
@@ -34,6 +33,7 @@ When suggesting a commit message:
 1 commit at a time:
 - Split orthogonal changes into separate commits. Helper change + its tests is one commit; the parser rewrite that uses it is another.
 - For bug fixes via refactor-then-fix: commit 1 is the extraction + a *failing* test that asserts correct behavior; commit 2 is the minimal fix. Do not commit "test pinning broken behavior + comment saying it's broken" — that's prose you'd just remove.
+- A commit must observably do something: every new function, class, or data file in it is called or read by code that exists at that commit.
 
 ## Verification over speculation
 
