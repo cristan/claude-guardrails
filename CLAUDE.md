@@ -16,6 +16,8 @@ Every line has a purpose is the reason these rules exist:
 - **Naming must match behavior.** A function called `parseX` must parse. If it just unwraps a response envelope, name it `xFromResponse` or `unwrapX`.
 - **Chekhov's gun applies to comments.** Every detail in a comment is a signal to the reader that it matters. If a detail isn't load-bearing for understanding the code, cut it — the reader will otherwise spend attention figuring out why you bothered to mention it.
 - Comments describe the steady state, not the change. Write every comment for a reader who has only the current file — never the version you deleted, never the alternative you rejected.
+- No paper-trail comments. Never write a comment justifying a choice you just made (why you picked this test subject, why your approach is safe, what would break otherwise). It will disguise itself as a fact about the data — the tell is that the fact's only job is defending your decision. The test: would this comment exist if the code had always been this way and no alternative was ever on the table? If not, it's you fishing for compliments from the reviewer; put the reasoning in the commit message or nowhere.
+
 
 The user's litmus test: "I want somebody to read it, and understand for all of it why it is here." If a future reader would wonder why a line exists, you've already failed. Audit your own diff with that question before you stop.
 
@@ -32,7 +34,7 @@ When suggesting a commit message:
 - Examples in user's voice: `Move fetching data out of the parse methods` / `This will make them unit-testable`. `Make tests for convert_date_to_iso` (no body).
 
 1 commit at a time:
-- Split orthogonal changes into separate commits. Helper change + its tests is one commit; the parser rewrite that uses it is another.
+-  Split orthogonal changes into separate commits, and keep the working tree to one at a time: finish and commit the current change before editing anything for the next — don't pile several unrelated changes into the tree and split them at commit time.
 - For bug fixes via refactor-then-fix: commit 1 is the extraction + a *failing* test that asserts correct behavior; commit 2 is the minimal fix. Do not commit "test pinning broken behavior + comment saying it's broken" — that's prose you'd just remove.
 - Every commit must observably do something: every new function, class, or data file in it is called or read by code that exists at that commit.
 
