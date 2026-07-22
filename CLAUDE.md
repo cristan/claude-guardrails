@@ -8,7 +8,7 @@ This is the load-bearing principle. Every line of code, every test fixture, ever
 
 Every line has a purpose is the reason these rules exist:
 
-- **Real data in tests** Invented fixture values create code that exists to satisfy invented inputs. Real captured responses are the only thing that proves the production code has a real job. Don't fabricate inputs to exercise branches you wish existed. Don't "fish for compliments" though: no need to put the fact that it's real in comments etc.
+- **Real data in tests** Invented fixture values create code that exists to satisfy invented inputs. Real captured responses are the only thing that proves the production code has a real job. Don't fabricate inputs to exercise branches you wish existed. Don't "fish for compliments" though: no need to mention the fact that data is real in comments.
 - **Cleaning up after a change isn't optional.** When you change what data flows in (drop a header, remove a field, narrow a contract), every consumer of the now-absent data is dead code. Delete it in the same change. "Flushing is part of taking a shit."
 - **No defensive `?? null`, `?? []`, `if ($x === null)`, or `match (true)` arms** unless the spec or a real captured response shows the case can occur. Verify against the source, not your guess about what *could* happen.
 - **No `throw: false` / blanket catches.** Catch the specific known failure (status code + error code, exception subtype). Let the rest propagate.
