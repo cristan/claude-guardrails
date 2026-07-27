@@ -8,7 +8,7 @@ This is the load-bearing principle. Every line of code, every test fixture, ever
 
 Every line has a purpose is the reason these rules exist:
 
-- **Real data in tests** Invented fixture values create code that exists to satisfy invented inputs. Real captured responses are the only thing that proves the production code has a real job. Don't fabricate inputs to exercise branches you wish existed. Don't "fish for compliments" though: no need to mention the fact that data is real in comments.
+- **Real data in tests** Invented fixture values create code that exists to satisfy invented inputs. Real captured responses are the only thing that proves the production code has a real job. Don't fabricate inputs to exercise branches you wish existed. Don't "fish for compliments" though: don't mention the fact that data is real in comments, test names etc.
 - **Cleaning up after a change isn't optional.** When you change what data flows in (drop a header, remove a field, narrow a contract), every consumer of the now-absent data is dead code. Delete it in the same change. "Flushing is part of taking a shit."
 - **No defensive `?? null`, `?? []`, `if ($x === null)`, or `match (true)` arms** unless the spec or a real captured response shows the case can occur. Verify against the source, not your guess about what *could* happen.
 - **No `throw: false` / blanket catches.** Catch the specific known failure (status code + error code, exception subtype). Let the rest propagate.
@@ -20,8 +20,8 @@ then re-add it only if it survives all this:
 1. Not a restatement of what any code already shows. Otherwise, the comment will get stale if the code ever gets updated.
 2. Don't explain "what should never happen", exceptions already mean that. Don't invent corner cases for the docblock to sound thorough.
 3. No narration of the step being performed.
-4. No justifications of decisions you just made (why this approach, why it's
-   safe, why this value, where the fixture comes from). If anywhere, it belongs to a commit message.
+4. Stuff like why you chose a method signature, why this approach, why it's safe, why this value, where the fixture comes from etc has no place in comments. If anywhere, it belongs to a commit message.
+5. Assume a reader has no clue on what the code looked like before, so don't explain anything which you wouldn't have written if you would have written the code from scratch.
    
 Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
@@ -72,7 +72,12 @@ When adding any dependency, verify the current latest stable version before pinn
 - After fixing logic, rewrite or delete stale comments and docstrings. Outdated comments deceive the next reader more than missing ones.
 - Descriptive variable names. No single-letter params (`v`, `e`, `x`) even in short lambdas — use the domain name.
 
-## Test data
+## Functional code
+Always write code as functional as possible. E.g. don't use `DateTime.now()`, directly in logic. Accept `now` as a parameter (default to current time at the boundary) so the method doesn't have side effects.
+
+Split decisions from side effects. Pure functions take data and return a result (boolean, enum, value); a separate piece of code performs the action. Decisions are then trivially testable.
+
+## Tests
 
 **Every test input and fixture value comes from real production data — captured API responses, real backend rows, live page HTML, real entities the system already deals with. Never invent values OR shapes.** Plausible-looking made-up values are the failure mode: an ID you fabricated, a JSON shape extrapolated from a sibling fixture. Each invented value creates code that exists to satisfy invented inputs and proves nothing about the real contract.
 
@@ -86,10 +91,7 @@ Hard-code expected values as literals. A test that computes the expectation via 
 
 Name tests after the contract being asserted, not implementation quirks. The condition in the name must be the *causal* reason for the asserted behavior, not just any fixture detail that happens to be true. If there is anything interesting about the fixture, explain it in a comment, not in the test name.
 
-## Functional code
-Always write code as functional as possible. E.g. don't use `DateTime.now()`, directly in logic. Accept `now` as a parameter (default to current time at the boundary) so the method doesn't have side effects.
-
-Split decisions from side effects. Pure functions take data and return a result (boolean, enum, value); a separate piece of code performs the action. Decisions are then trivially testable.
+If you're using fakes/mocks in your unit tests, it's likely that the code is either not functional enough, or you're unit testing code (like backend calling code) which doesn't need unit testing. Avoid it if at all possible.
 
 ## Architectural judgment
 The user values truth above all. When the user proposes an approach, consider whether a simpler / better solution exists (for example doing something different in the infra layer instead). If so, propose the alternative.
