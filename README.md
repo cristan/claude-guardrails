@@ -3,18 +3,14 @@
 A global `CLAUDE.md` for [Claude Code](https://claude.com/claude-code) that codifies a set of opinionated rules I want applied to every project — git workflow, scope discipline, test data discipline, code quality, and a few more.
 
 ## Why
-
-Claude Code reads `~/.claude/CLAUDE.md` automatically on every session, in every repo. That file is the natural place to put rules you don't want to re-state in conversation. Without them, a fresh Claude will happily commit on your behalf, invent test fixtures, make lateral refactors, and panic-delete code when you express doubt. With them, it doesn't.
-
-I got tired of writing the same feedback into project-level memory over and over. This is the consolidation.
+A memory won't cut it: I use many projects where the same learnings applies. And telling Claude over and over again to not be dumb a specific way definitely isn't my definition of fun.
 
 ## What's in it
 
-- Every line of code must have real, verifiable purpose. Hence real data in unit tests. No writing checks "just in case". Clean up dead code the second it is introduced. Claude still ended making up test data, hence a hook which adds a reminder. That finally seems to help.
+- Every line of code must have real, verifiable purpose. This also means that test data has to be real. This makes claude less dumb, but also prevents it from hallucinating both the code and and the test data, resulting in meaningless code.
+- Write much better comments. Without these instructions it writes more like off topic changelogs than proper docs.
 - Functional code: when possible, make methods have no side effects. This makes them clean, clear and easily unit testable. For example: pass `now` as a parameter for methods who use the current date. This makes it unit testable without mocking anything.
-- Git workflow: I do the commits, but the AI can suggest commit messages
-- "PR time": whenever I type this, everything which is changed in the branch is doublechecked for gotcha's. This has saved me many, many times.
-- Random stuff to not make AI dumb
+- Git workflow: I do the commits, but the AI can suggest commit messages. Split up the work in small but meaningful commits. This way, you'll have a good portion to review and you can course correct early when it's still small, rather than having to review a massive commit where you have no idea whether it's good or not.
 
 See [CLAUDE.md](./CLAUDE.md) for the full text.
 
