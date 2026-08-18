@@ -9,10 +9,11 @@ This is the load-bearing principle. Every line of code, every test fixture, ever
 Every line has a purpose is the reason these rules exist:
 
 - **Real data in tests** Invented fixture values create code that exists to satisfy invented inputs. Real captured responses are the only thing that proves the production code has a real job. Don't fabricate inputs to exercise branches you wish existed. Don't "fish for compliments" though: don't mention the fact that data is real in comments, test names etc.
-- **Cleaning up after a change isn't optional.** When you change what data flows in (drop a header, remove a field, narrow a contract), every consumer of the now-absent data is dead code. Delete it in the same change. "Flushing is part of taking a shit."
+- **Cleaning up after a change isn't optional.** When you change what data flows in (drop a header, remove a field, narrow a contract), every consumer of the now-absent data is dead code. Delete it in the same change. Same goes for methods: if you no longer call a method, check if you can remove it. "Flushing is part of taking a shit."
 - **No defensive `?? null`, `?? []`, `if ($x === null)`, or `match (true)` arms** unless the spec or a real captured response shows the case can occur. Verify against the source, not your guess about what *could* happen.
 - **No `throw: false` / blanket catches.** Catch the specific known failure (status code + error code, exception subtype). Let the rest propagate.
-- **Naming must match behavior.** A function called `parseX` must parse. If it just unwraps a response envelope, name it `xFromResponse` or `unwrapX`.
+- **Names say what a thing is, not its role in the algorithm**. A function name says what it returns and how it got there. Use only words already in this codebase or the domain, nothing from the current context. Read each new name on its own, with no body and no call site: if you cannot say what it holds or returns, rename it.
+
 
 ## Comments
 Default to ZERO comments. Before keeping any comment or docstring, delete it,
@@ -20,8 +21,9 @@ then re-add it only if it survives all this:
 1. Not a restatement of what any code already shows. Otherwise, the comment will get stale if the code ever gets updated.
 2. Don't explain "what should never happen", exceptions already mean that. Don't invent corner cases for the docblock to sound thorough.
 3. No narration of the step being performed.
-4. Stuff like why you chose a method signature, why this approach, why it's safe, why this value, where the fixture comes from etc has no place in comments. If anywhere, it belongs to a commit message.
+4. Just write good code, don't explain why it is good code. Stuff like why you chose a method signature, why this approach, why it's safe, why this value, where the fixture comes from etc has no place in comments. If anywhere, it belongs to a commit message.
 5. Assume a reader has no clue on what the code looked like before, so don't explain anything which you wouldn't have written if you would have written the code from scratch.
+6. Try writing code which doesn't need a comment instead.
    
 Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
@@ -40,14 +42,14 @@ When suggesting a commit message:
 
 1 commit at a time:
 -  Split orthogonal changes into separate commits, and keep the working tree to one at a time: finish and commit the current change before editing anything for the next — don't pile several unrelated changes into the tree and split them at commit time.
-- For bug fixes via refactor-then-fix: commit 1 is the extraction + a *failing* test that asserts correct behavior; commit 2 is the minimal fix. Do not commit "test pinning broken behavior + comment saying it's broken" — that's prose you'd just remove.
-- Every commit must observably do something: every new function, class, or data file in it is called or read by code that exists at that commit.
+- Moving code is its own commit: when extracting a method would dominate the diff, do the extract first for a separate commit, so the fix that follows is small and reviewable.
+- Every commit must observably do something: every new function, class, or data file in it is called or read by non-unit test code that exists at that commit.
 
 ## Verification over speculation
 
 If a factual claim is checkable with one bash command or file read, check it before answering. Don't present uncertainty as a question to the user — they expect you to look things up.
 
-The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "ready to commit", "already landed", "what's left") without a `git status`/`log`/`diff` run in the same reply. Make it the first action of any commit-related reply.
+The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit" etc) without a `git status`/`log`/`diff` run in the same reply. Make it the first action of any commit-related reply.
 
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
@@ -96,4 +98,7 @@ If you're using fakes/mocks in your unit tests, it's likely that the code is eit
 ## Architectural judgment
 The user values truth above all. When the user proposes an approach, consider whether a simpler / better solution exists (for example doing something different in the infra layer instead). If so, propose the alternative.
 
-When the user expresses doubt ("I doubt this works", "I'm not sure"), investigate and produce evidence — don't panic-delete and don't silently capitulate. Form an opinion with reasoning.
+Before proposing a fix, say what the underlying cause is. If the fix decorates the cause
+  rather than removing it, say so and let me choose.
+
+When the user expresses doubt ("I doubt this works", "I'm not sure") or asks a question about the code ("why is this here?", "what is this?", "is that bad?"), the deliverable is the answer, not a change.
