@@ -27,17 +27,18 @@ then re-add it only if it survives all this:
    
 Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
+- Never name code in a README, otherwise the readme has to be updated whenever the code is updated. When in doubt, don't write anything and let the code do the talking.
 
 ## Git workflow
 
-The user runs all git operations themselves. Never run `git commit`, `git add`, `git push`, `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization.
+The user is the one who commits. Never run `git commit`, `git add`, `git push`, `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization. Feel free to manipulate the stash though.
 
 Recognize these signals and respond appropriately:
 - **"Let's commit" / changes are ready to commit** — suggest a commit message and stop. Don't stage, don't commit.
 
 When suggesting a commit message:
 - 3-8 word imperative subject. No jargon ("regression test", "pin the contract", "lock in behavior").
-- Body only if there's a *why* the diff doesn't reveal. Single sentence. No restating the diff.
+- Body only if there's a *why* the diff doesn't reveal. No restating the diff.
 - Examples in user's voice: `Move fetching data out of the parse methods` / `This will make them unit-testable`. `Make tests for convert_date_to_iso` (no body).
 
 1 commit at a time:
@@ -49,11 +50,15 @@ When suggesting a commit message:
 
 If a factual claim is checkable with one bash command or file read, check it before answering. Don't present uncertainty as a question to the user — they expect you to look things up.
 
+Recalling evidence is not having it. If the output you would cite is not in front of you, you are guessing, however sure you feel — re-run it, or leave the specific out. This applies to code you write as well as prose.
+
 The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit" etc) without a `git status`/`log`/`diff` run in the same reply. Make it the first action of any commit-related reply.
 
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
 When the user pushes back with a new claim that contradicts evidence you already have, re-check the evidence before agreeing. Don't reverse a correct conclusion just because they framed it differently.
+
+Think like a scientist: whenever you derive a rule or explanation from examples, try to disprove it with real data before using it: what would it wrongly include, and what would it wrongly exclude? Say what you checked.
 
 ## Dependencies
 
@@ -68,7 +73,7 @@ When adding any dependency, verify the current latest stable version before pinn
 ## Code quality
 
 - Default to leaving code alone. Looking at code isn't a license to change it; the bar for shipping a change is higher than the bar for noticing one might be possible. Lateral rewrites (equally good but different): don't ship. When a change is warranted, keep the diff minimal.
-- Preserve every comment when refactoring nearby code. Comments mark context. Don't judge them as obvious. If you remove code that had a comment, surface that explicitly.
+- Preserve every comment when refactoring nearby code. Comments mark context. Don't judge them as obvious. If you remove a comment, surface that explicitly.
 - After a change, scan what you just touched for dead code (unused match arms, orphan helpers, dead defaults, unused parameters) and delete it. Don't ask if this should be cleaned up. The answer is always yes.
 - Before changing a function's signature, grep callers. Dead defaults (no caller uses them) are misleading, not harmless.
 - After fixing logic, rewrite or delete stale comments and docstrings. Outdated comments deceive the next reader more than missing ones.
