@@ -28,7 +28,7 @@ If `~/.claude/CLAUDE.md` already exists, back it up first: `mv ~/.claude/CLAUDE.
 Option 2: copy. If you'd rather edit a local copy and only sync deliberately:
 
 ```bash
-curl -o ~/.claude/CLAUDE.md https://raw.githubusercontent.com/<you>/<repo-name>/main/CLAUDE.md
+curl -o ~/.claude/CLAUDE.md https://raw.githubusercontent.com/cristan/claude-guardrails/main/CLAUDE.md
 ```
 
 ## Adapt it
