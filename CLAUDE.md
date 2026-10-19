@@ -29,12 +29,17 @@ Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
 - Never name code in a README, otherwise the readme has to be updated whenever the code is updated. When in doubt, don't write anything and let the code do the talking.
 
+Write for a reader who only has the diff. Commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no “this” or “that” pointing at the discussion, and every sentence true on its own. When it makes a factual claim, have an agent that sees only the text and the diff paraphrase it first.
+
+
 ## Git workflow
 
 The user is the one who commits. Never run `git commit`, `git add`, `git push`, `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization. Feel free to manipulate the stash though.
 
 Recognize these signals and respond appropriately:
 - **"Let's commit" / changes are ready to commit** — suggest a commit message and stop. Don't stage, don't commit.
+
+Always pass --no-track when creating a branch or worktree, so a push never lands on another branch.
 
 When suggesting a commit message:
 - 3-8 word imperative subject. No jargon ("regression test", "pin the contract", "lock in behavior").
@@ -52,13 +57,13 @@ If a factual claim is checkable with one bash command or file read, check it bef
 
 Recalling evidence is not having it. If the output you would cite is not in front of you, you are guessing, however sure you feel — re-run it, or leave the specific out. This applies to code you write as well as prose.
 
-The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit" etc) without a `git status`/`log`/`diff` run in the same reply. Make it the first action of any commit-related reply.
+The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit", "on the X branch" etc) without a `git status`/`log`/`diff` run in the same reply. Make it the first action of any git-related reply.
 
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
 When the user pushes back with a new claim that contradicts evidence you already have, re-check the evidence before agreeing. Don't reverse a correct conclusion just because they framed it differently.
 
-Think like a scientist: whenever you derive a rule or explanation from examples, try to disprove it with real data before using it: what would it wrongly include, and what would it wrongly exclude? Say what you checked.
+Think like a scientist: whenever you derive a rule, solution or explanation, try to disprove it with real data before using it: what would it wrongly include, and what would it wrongly exclude? Say what you checked.
 
 ## Dependencies
 
@@ -72,7 +77,7 @@ When adding any dependency, verify the current latest stable version before pinn
 
 ## Code quality
 
-- Default to leaving code alone. Looking at code isn't a license to change it; the bar for shipping a change is higher than the bar for noticing one might be possible. Lateral rewrites (equally good but different): don't ship. When a change is warranted, keep the diff minimal.
+- Default to leaving code alone. Looking at code isn't a license to change it; the bar for shipping a change is higher than the bar for noticing one might be possible. Lateral rewrites (equally good but different): don't ship. When a cleanup is warranted, stop before making the change and suggest the preparatory edit as its own commit first.
 - Preserve every comment when refactoring nearby code. Comments mark context. Don't judge them as obvious. If you remove a comment, surface that explicitly.
 - After a change, scan what you just touched for dead code (unused match arms, orphan helpers, dead defaults, unused parameters) and delete it. Don't ask if this should be cleaned up. The answer is always yes.
 - Before changing a function's signature, grep callers. Dead defaults (no caller uses them) are misleading, not harmless.
@@ -98,7 +103,7 @@ Hard-code expected values as literals. A test that computes the expectation via 
 
 Name tests after the contract being asserted, not implementation quirks. The condition in the name must be the *causal* reason for the asserted behavior, not just any fixture detail that happens to be true. If there is anything interesting about the fixture, explain it in a comment, not in the test name.
 
-If you're using fakes/mocks in your unit tests, it's likely that the code is either not functional enough, or you're unit testing code (like backend calling code) which doesn't need unit testing. Avoid it if at all possible.
+If you're using fakes/mocks in your unit tests, it's likely that the code is either not functional enough, or you're unit testing code which doesn't need unit testing (like backend calling code). Avoid it if at all possible.
 
 ## Architectural judgment
 The user values truth above all. When the user proposes an approach, consider whether a simpler / better solution exists (for example doing something different in the infra layer instead). If so, propose the alternative.
