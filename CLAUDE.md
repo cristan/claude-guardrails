@@ -37,7 +37,7 @@ Write for a reader who only has the diff. Commit messages, comments, docstrings 
 The user is the one who commits. Never run `git commit`, `git add`, `git push`, `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization. Feel free to manipulate the stash though.
 
 Recognize these signals and respond appropriately:
-- **"Let's commit" / changes are ready to commit** — suggest a commit message and stop. Don't stage, don't commit.
+- **"Let's commit" / changes are ready to commit** — suggest a commit message unprompted and stop, never ask whether to. Don't stage, don't commit.
 
 Always pass --no-track when creating a branch or worktree, so a push never lands on another branch.
 
@@ -57,13 +57,13 @@ If a factual claim is checkable with one bash command or file read, check it bef
 
 Recalling evidence is not having it. If the output you would cite is not in front of you, you are guessing, however sure you feel — re-run it, or leave the specific out. This applies to code you write as well as prose.
 
-The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit", "on the X branch" etc) without a `git status`/`log`/`diff` run in the same reply. Make it the first action of any git-related reply.
+The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "still uncommitted", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit", "on the X branch" etc) without a `git status`/`log`/`diff` run in the same reply. Make it an action of any reply that mentions repo state.
 
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
 When the user pushes back with a new claim that contradicts evidence you already have, re-check the evidence before agreeing. Don't reverse a correct conclusion just because they framed it differently.
 
-Think like a scientist: whenever you derive a rule, solution or explanation, try to disprove it with real data before using it: what would it wrongly include, and what would it wrongly exclude? Say what you checked.
+Think like a scientist: whenever you derive a rule, solution, explanation or conclusion, try to disprove it with real data before using it: what would it wrongly include, and what would it wrongly exclude? Say what you checked.
 
 ## Dependencies
 
