@@ -29,25 +29,22 @@ Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
 - Never name code in a README, otherwise the readme has to be updated whenever the code is updated. When in doubt, don't write anything and let the code do the talking.
 
-Write for a reader who only has the diff. Commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no “this” or “that” pointing at the discussion, and every sentence true on its own. When it makes a factual claim, have an agent that sees only the text and the diff paraphrase it first.
+Write for a reader who only has the diff. Commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no “this” or “that” pointing at the discussion, and every sentence true on its own. When it makes a factual claim, have an agent that sees only the text and the diff paraphrase it first, and flag every “could”, “may” or “might” as an unchecked case.
 
 
 ## Git workflow
 
 The user is the one who commits. Never run `git commit`, `git add`, `git push`, `git rebase`, or `gh pr create` — even when the work is finished, tested, and obviously ready, and even if an earlier message in the conversation seemed to authorize it. Authorization for one operation is not standing authorization. Feel free to manipulate the stash though.
 
-Recognize these signals and respond appropriately:
-- **"Let's commit" / changes are ready to commit** — suggest a commit message unprompted and stop, never ask whether to. Don't stage, don't commit.
-
 Always pass --no-track when creating a branch or worktree, so a push never lands on another branch.
 
-When suggesting a commit message:
+End finished work with a commit message, unasked:
 - 3-8 word imperative subject. No jargon ("regression test", "pin the contract", "lock in behavior").
 - Body only if there's a *why* the diff doesn't reveal. No restating the diff.
 - Examples in user's voice: `Move fetching data out of the parse methods` / `This will make them unit-testable`. `Make tests for convert_date_to_iso` (no body).
 
 1 commit at a time:
--  Split orthogonal changes into separate commits, and keep the working tree to one at a time: finish and commit the current change before editing anything for the next — don't pile several unrelated changes into the tree and split them at commit time.
+- One change per commit, even when several serve the same goal: if the message needs an “and”, split it. Commit each before editing anything for the next.
 - Moving code is its own commit: when extracting a method would dominate the diff, do the extract first for a separate commit, so the fix that follows is small and reviewable.
 - Every commit must observably do something: every new function, class, or data file in it is called or read by non-unit test code that exists at that commit.
 
@@ -77,7 +74,7 @@ When adding any dependency, verify the current latest stable version before pinn
 
 ## Code quality
 
-- Default to leaving code alone. Looking at code isn't a license to change it; the bar for shipping a change is higher than the bar for noticing one might be possible. Lateral rewrites (equally good but different): don't ship. When a cleanup is warranted, stop before making the change and suggest the preparatory edit as its own commit first.
+- Default to leaving code alone. When a cleanup is warranted, stop before making the change and suggest the preparatory edit as its own commit first.
 - Preserve every comment when refactoring nearby code. Comments mark context. Don't judge them as obvious. If you remove a comment, surface that explicitly.
 - After a change, scan what you just touched for dead code (unused match arms, orphan helpers, dead defaults, unused parameters) and delete it. Don't ask if this should be cleaned up. The answer is always yes.
 - Before changing a function's signature, grep callers. Dead defaults (no caller uses them) are misleading, not harmless.
@@ -95,7 +92,7 @@ Split decisions from side effects. Pure functions take data and return a result 
 
 For every value in a test, you should be able to answer: *where does this come from?* Acceptable sources: a captured response from the real backend, a real run of the app, an existing fixture from elsewhere in the codebase, an official reference (spec, schema, sample data), a real entity in the system (station codes, user IDs, real coordinates). If you can't find one, ask the user — don't fall back to "this looks about right." If the user has to point out an invented input value, the test should not have been written that way.
 
-This applies to shapes too. Don't extrapolate one fixture's structure to another without verifying. Don't fabricate inputs to exercise error branches — if the backend doesn't produce that shape, there's no contract to test.
+This applies to shapes too. Don't extrapolate one fixture's structure to another without verifying, and don't add fields. Don't fabricate inputs to exercise error branches — if the backend doesn't produce that shape, there's no contract to test. However, do feel free to leave out fields and records the code under test doesn't read. 
 
 A sub-question that catches LLMs out: *which combinations of arguments are even worth testing?* A signature suggests what *could* be passed; only the call sites tell you what *is* passed. If only `format(_, 1)` is ever called in the codebase, don't write a `format(_, 2)` test — that combination has no production contract. Grep the real call sites when in doubt about which branches/parameter combinations are real. If a parameter is always derived from a real-world quantity (e.g. HTTP response data), the test input should look like that quantity, not a generic "exercise the function" value.
 
