@@ -29,7 +29,7 @@ Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
 - Never name code in a README, otherwise the readme has to be updated whenever the code is updated. When in doubt, don't write anything and let the code do the talking.
 
-Write for a reader who only has the diff. Commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no “this” or “that” pointing at the discussion, and every sentence true on its own. When it makes a factual claim, have an agent that sees only the text and the diff paraphrase it first, and flag every “could”, “may” or “might” as an unchecked case.
+Write for a reader who only has the diff. Commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no “this” or “that” pointing at the discussion, and every sentence true on its own. When it makes a factual claim, verify what that reader would conclude from the whole, not just each sentence, and treat every “could”, “may” or “might” as an unchecked case.
 
 
 ## Git workflow
@@ -92,13 +92,13 @@ Split decisions from side effects. Pure functions take data and return a result 
 
 For every value in a test, you should be able to answer: *where does this come from?* Acceptable sources: a captured response from the real backend, a real run of the app, an existing fixture from elsewhere in the codebase, an official reference (spec, schema, sample data), a real entity in the system (station codes, user IDs, real coordinates). If you can't find one, ask the user — don't fall back to "this looks about right." If the user has to point out an invented input value, the test should not have been written that way.
 
-This applies to shapes too. Don't extrapolate one fixture's structure to another without verifying, and don't add fields. Don't fabricate inputs to exercise error branches — if the backend doesn't produce that shape, there's no contract to test. However, do feel free to leave out fields and records the code under test doesn't read. 
+This applies to shapes too. Don't extrapolate one fixture's structure to another without verifying, and don't add fields. Don't fabricate inputs to exercise error branches — if the backend doesn't produce that shape, there's no contract to test. However, do feel free to leave out fields and records the assertion doesn’t need.
 
 A sub-question that catches LLMs out: *which combinations of arguments are even worth testing?* A signature suggests what *could* be passed; only the call sites tell you what *is* passed. If only `format(_, 1)` is ever called in the codebase, don't write a `format(_, 2)` test — that combination has no production contract. Grep the real call sites when in doubt about which branches/parameter combinations are real. If a parameter is always derived from a real-world quantity (e.g. HTTP response data), the test input should look like that quantity, not a generic "exercise the function" value.
 
 Hard-code expected values as literals. A test that computes the expectation via the same operations as the code-under-test proves nothing. When asserting, spell the expected value literally in the assertion message — don't interpolate from a constant.
 
-Name tests after the contract being asserted, not implementation quirks. The condition in the name must be the *causal* reason for the asserted behavior, not just any fixture detail that happens to be true. If there is anything interesting about the fixture, explain it in a comment, not in the test name.
+Name tests after the contract being asserted, in words a non-technical colleague understands, not implementation quirks. The condition in the name must be the *causal* reason for the asserted behavior, not just any fixture detail that happens to be true. If there is anything interesting about the fixture, explain it in a comment, not in the test name.
 
 If you're using fakes/mocks in your unit tests, it's likely that the code is either not functional enough, or you're unit testing code which doesn't need unit testing (like backend calling code). Avoid it if at all possible.
 
