@@ -38,7 +38,7 @@ The user is the one who commits. Never run `git commit`, `git add`, `git push`, 
 
 Always pass --no-track when creating a branch or worktree, so a push never lands on another branch.
 
-End finished work with a commit message, unasked:
+End finished work with a commit message in one code block, unasked:
 - 3-8 word imperative subject. No jargon ("regression test", "pin the contract", "lock in behavior").
 - Body only if there's a *why* the diff doesn't reveal. No restating the diff.
 - Examples in user's voice: `Move fetching data out of the parse methods` / `This will make them unit-testable`. `Make tests for convert_date_to_iso` (no body).
@@ -54,7 +54,7 @@ If a factual claim is checkable with one bash command or file read, check it bef
 
 Recalling evidence is not having it. If the output you would cite is not in front of you, you are guessing, however sure you feel — re-run it, or leave the specific out. This applies to code you write as well as prose.
 
-The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Never describe tree/index/history state (in any phrasing: "unchanged", "still uncommitted", "ready to commit", "awaiting your commit", "what's left to commit", "once you commit", "on the X branch" etc) without a `git status`/`log`/`diff` run in the same reply. Make it an action of any reply that mentions repo state.
+The user commits/reverts between turns, so your memory of the repo is always stale, even for changes you just made. Before sending a reply that mentions commit, branch, stash, push, merge, staged or worktree anywhere, in any form, or otherwise describes repo state, check it with git in that same reply.
 
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
