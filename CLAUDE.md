@@ -12,7 +12,7 @@ Every line has a purpose is the reason these rules exist:
 - **Cleaning up after a change isn't optional.** When you change what data flows in (drop a header, remove a field, narrow a contract), every consumer of the now-absent data is dead code. Delete it in the same change. Same goes for methods: if you no longer call a method, check if you can remove it. "Flushing is part of taking a shit."
 - **No defensive `?? null`, `?? []`, `if ($x === null)`, or `match (true)` arms** unless the spec or a real captured response shows the case can occur. Verify against the source, not your guess about what *could* happen.
 - **No `throw: false` / blanket catches.** Catch the specific known failure (status code + error code, exception subtype). Let the rest propagate.
-- **Names say what a thing is, not its role in the algorithm**. A function name says what it returns and how it got there. Use only words already in this codebase or the domain, nothing from the current context. Read each new name on its own, with no body and no call site: if you cannot say what it holds or returns, rename it.
+- **Names say what a thing is, not its role in the algorithm**. A function name says what it returns. Use only words already in this codebase or the domain, nothing from the current context. Read each new name on its own, with no body and no call site: if you cannot say what it holds or returns, or why anyone would want it, rename it.
 
 
 ## Comments
@@ -29,8 +29,8 @@ Also:
 - When a comment or docstring wraps across lines, break at clause or sentence boundaries so each line reads on its own.   
 - Never name code in a README, otherwise the readme has to be updated whenever the code is updated. When in doubt, don't write anything and let the code do the talking.
 
-Write for a reader who only has the diff. Commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no “this” or “that” pointing at the discussion, and every sentence true on its own. When it makes a factual claim, verify what that reader would conclude from the whole, not just each sentence, and treat every “could”, “may” or “might” as an unchecked case.
-
+Write for a reader who only has the diff. Code, commit messages, comments, docstrings and test names are read by people who never saw this conversation. Before sending one, read each sentence the way that reader would: no "this" or "that" pointing at the discussion, and every sentence true on its own when read word for word. Words like "can't", "the first", "only", "always", "all" and "never" must be literally true, not roughly. When it makes a factual claim, verify what that reader would conclude from the whole, not just each sentence, and treat every "could", "may" or "might" as an unchecked case. 
+    Before giving me the commit message for substantial new code, have an agent that never saw this conversation read the change and the message, told nothing about them, and say what each name holds and why each line is there. Where it hesitates or misreads, fix it from its own report by renaming or simplifying, not by adding words. Never rename to a name that breaks the Names rule. Have a second new agent read your fixes, and undo any it stumbles on. Tell me what you left, one line each. Small edits, renames and config changes don’t need this.
 
 ## Git workflow
 
@@ -58,7 +58,7 @@ The user commits/reverts between turns, so your memory of the repo is always sta
 
 When debugging, gather evidence (read the code, add logging, look at real data) before proposing theories. Reserve "I'm not sure" for things you genuinely cannot verify locally.
 
-When the user pushes back with a new claim that contradicts evidence you already have, re-check the evidence before agreeing. Don't reverse a correct conclusion just because they framed it differently.
+When the user pushes back or asks a probing question (“is that better?”, “why?”, “examples?”), that is a request for the reasoning, not a reason to change sides. Answer it, judged by the criterion the choice was made for. Change position only when the answer turns up new evidence, and name that evidence. Never reverse a conclusion because it was questioned or framed differently.
 
 Think like a scientist: whenever you derive a rule, solution, explanation or conclusion, try to disprove it with real data before using it: what would it wrongly include, and what would it wrongly exclude? Say what you checked.
 
